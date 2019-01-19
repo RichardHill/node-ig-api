@@ -30,7 +30,7 @@ process.env.IG_TOKENS_EXP = tokens.tokens_exp;
 process.env.IG_XST = tokens['x-security-token'];
 process.env.IG_CST = tokens.cst;
 process.env.IG_LIGHTSTREAMER_END_POINT = tokens.lightstreamerEndpoint;
-var demo = process.env.IG_DEMO==='TRUE'?true:false;
+var demo = process.env.IG_DEMO.toLowerCase() === 'true' ? true : false;
 
 var tokensNull = {
 	'tokens_exp': 0,
@@ -183,7 +183,7 @@ function login(encryption) {
 	 * @return {json} 
 	 */
 	return new Promise((res, rej) => {
-		encryption = typeof(encryption) === 'undefined' ? false : encryption;
+		encryption = typeof (encryption) === 'undefined' ? false : encryption;
 		let tokens = {};
 		let extraHeaders = {
 			'Version': 2
@@ -339,27 +339,27 @@ function acctActivity(from, to, detailed, dealId, pageSize) {
 		let dateReg = /^\d{4}([./-])\d{2}\1\d{2}$/;
 		if (!dateReg.test(from)) throw new Error('from has to have format: YYYY-MM-DD');
 		if (!dateReg.test(to)) throw new Error('to has to have format: YYYY-MM-DD');
-		if (typeof(from) === 'undefined') {
+		if (typeof (from) === 'undefined') {
 			from = '?from=1990-01-01';
 		} else {
 			from = '?from=' + from;
 		}
-		if (typeof(to) === 'undefined') {
+		if (typeof (to) === 'undefined') {
 			to = '&to=2099-01-01';
 		} else {
 			to = '&to=' + to;
 		}
-		if (typeof(detailed) === 'undefined') {
+		if (typeof (detailed) === 'undefined') {
 			detailed = '&detailed=false';
 		} else {
 			detailed = '&detailed=' + detailed;
 		}
-		if (typeof(dealId) === 'undefined') {
+		if (typeof (dealId) === 'undefined') {
 			dealId = '';
 		} else {
 			dealId = '&dealId=' + dealId;
 		}
-		if (typeof(pageSize) === 'undefined') {
+		if (typeof (pageSize) === 'undefined') {
 			pageSize = '&pageSize=500';
 		} else {
 			pageSize = '&pageSize=' + pageSize;
@@ -382,27 +382,27 @@ function acctActivity(from, to, detailed, dealId, pageSize) {
 // Returns the transaction history
 function acctTransaction(type, from, to, pageSize, pageNumber) {
 	return new Promise((res, rej) => {
-		if (typeof(type) === 'undefined') {
+		if (typeof (type) === 'undefined') {
 			type = '?type=ALL';
 		} else {
 			type = '?type=' + type;
 		} //ALL, ALL_DEAL, DEPOSIT, WITHDRAWAL
-		if (typeof(from) === 'undefined') {
+		if (typeof (from) === 'undefined') {
 			from = '&from=1990-01-01';
 		} else {
 			from = '&from=' + from;
 		}
-		if (typeof(to) === 'undefined') {
+		if (typeof (to) === 'undefined') {
 			to = '&to=2099-01-01';
 		} else {
 			to = '&to=' + to;
 		}
-		if (typeof(pageSize) === 'undefined') {
+		if (typeof (pageSize) === 'undefined') {
 			pageSize = '&pageSize=0';
 		} else {
 			pageSize = '&pageSize=' + pageSize;
 		}
-		if (typeof(pageNumber) === 'undefined') {
+		if (typeof (pageNumber) === 'undefined') {
 			pageNumber = '&pageNumber=0';
 		} else {
 			pageNumber = '&pageNumber=' + pageNumber;
@@ -426,7 +426,7 @@ function acctTransaction(type, from, to, pageSize, pageNumber) {
 function apiInfo() {
 	return new Promise((res, rej) => {
 		get('/operations/application').
-		then(r => {
+			then(r => {
 				if (r.status !== 200) {
 					rej(r);
 				} else {
@@ -588,7 +588,7 @@ function closeAllPositions() {
 		get('/positions', 2)
 			.then(r => {
 				let temp = r.body.positions;
-				if (temp.length === 0)(res('There is no position to close'));
+				if (temp.length === 0) (res('There is no position to close'));
 				for (let i = 0; i < temp.length; i++) {
 					tickets.push({
 						'dealId': temp[i].position.dealId, // to be tested
@@ -721,7 +721,7 @@ function deleteAllOrders() {
 		get('/workingorders')
 			.then(r => {
 				let temp = r.body.workingOrders;
-				if (temp.length === 0)(res('There is no order to close'));
+				if (temp.length === 0) (res('There is no order to close'));
 				for (let i = 0; i < temp.length; i++) {
 					tickets.push(temp[i].workingOrderData.dealId);
 				}
@@ -817,12 +817,12 @@ function igVolume(epics) {
 // Market node content
 function marketNode(id) {
 	return new Promise((res, rej) => {
-		let url = typeof(id) === 'undefined' ? '/marketnavigation' : '/marketnavigation/' + id;
+		let url = typeof (id) === 'undefined' ? '/marketnavigation' : '/marketnavigation/' + id;
 		get(url)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
-				} else(res(r.body));
+				} else (res(r.body));
 			})
 			.catch(e => {
 				rej(e);
@@ -892,7 +892,7 @@ function epicDetails(epics) {
 // Watchlists summary and watchlist content
 function watchlists(id) {
 	return new Promise((res, rej) => {
-		if (typeof(id) === 'undefined') {
+		if (typeof (id) === 'undefined') {
 			get('/watchlists')
 				.then(r => {
 					if (r.status !== 200) {
@@ -1005,7 +1005,7 @@ function removeEpicWatchlist(epic, watchlistID) {
 function connectToLightstreamer() {
 
 	// include the Lightstreamer LightstreamerClient module using requirejs
-	requirejs(['LightstreamerClient'], function(LightstreamerClient) {
+	requirejs(['LightstreamerClient'], function (LightstreamerClient) {
 
 		// Instantiate Lightstreamer client instance
 		lsClient = new LightstreamerClient(process.env.IG_LIGHTSTREAMER_END_POINT);
@@ -1053,7 +1053,7 @@ function subscribeToLightstreamer(subscriptionMode, items, fields, maxFreq) {
 	}
 
 	// include the Lightstreamer Subscription module using requirejs
-	requirejs(['Subscription'], function(Subscription) {
+	requirejs(['Subscription'], function (Subscription) {
 
 		let str = [];
 		let colNames = ['RUN_TIME', 'EPIC'].concat(fields);
@@ -1067,11 +1067,11 @@ function subscribeToLightstreamer(subscriptionMode, items, fields, maxFreq) {
 		// Set up Lightstreamer event listener
 		subscription.addListener({
 
-			onSubscription: function() {
+			onSubscription: function () {
 				console.log('Subscribed to: ' + items);
 			},
 
-			onUnsubscription: function() {
+			onUnsubscription: function () {
 				console.log('Unsubscribed');
 			},
 
